@@ -1,0 +1,33 @@
+<?php
+$servername = "mysql-server";
+$username = "root";
+$password = "lritzke";
+$database = "restaurant_registration";
+
+$conn = new mysqli($servername, $username, $password, $database);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+$drinkName = $_GET['drink_name'];
+
+$query = "SELECT DAY, SUM(total_price) as total_price
+          FROM total_profits
+          WHERE which_profit = '$drinkName'
+          GROUP BY DAY
+          ORDER BY DAY";
+
+$result = $conn->query($query);
+
+$data = [];
+
+while ($row = $result->fetch_assoc()) {
+    $data[] = $row;
+}
+
+echo json_encode($data);
+
+$conn->close();
+?>
+
